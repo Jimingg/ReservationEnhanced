@@ -39,9 +39,11 @@ public class MainActivity extends AppCompatActivity {
     EditText etTime;
     Button btnres;
     Button btnreset;
-     int year;
-    int month;
-    int day;
+     int thisyear;
+    int thismonth;
+    int thisday;
+    int thishour;
+    int thisminute;
 
     @Override
     protected void onPause() {
@@ -50,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor prefEdit = prefs.edit();
         prefEdit.putString("date",etDay.getText().toString());
         prefEdit.putString("time",etTime.getText().toString());
+        prefEdit.putString("name",etinput1.getText().toString());
+        prefEdit.putString("number",etinput2.getText().toString());
+        prefEdit.putString("size",etinput3.getText().toString());
+        if (cbsmoking.isChecked()) {
+            prefEdit.putString("smoking", "true");
+        }else{
+            prefEdit.putString("smoking", "false");
+        }
+
         prefEdit.commit();
     }
 
@@ -59,8 +70,17 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String lastDate =prefs.getString("date","");
         String lastTime=prefs.getString("time","");
+        String lastName=prefs.getString("name","");
+        String lastNum=prefs.getString("number","");
+        String lastSize=prefs.getString("size","");
+        String lastsmoking=prefs.getString("smoking","");
+
         etTime.setText(lastTime);
         etDay.setText(lastDate);
+        etinput1.setText(lastName);
+        etinput2.setText(lastNum);
+        etinput3.setText(lastSize);
+
     }
 
     @Override
@@ -78,14 +98,16 @@ public class MainActivity extends AppCompatActivity {
         etTime=findViewById(R.id.editTextTime);
         btnres=findViewById(R.id.buttonRes);
         btnreset=findViewById(R.id.button2Reset);
+        if (thisyear == 0 || thismonth ==0 || thisday == 0 || thishour == 0 || thisminute == 0);
         Calendar calendar= Calendar.getInstance();
-        int Y=calendar.get(Calendar.YEAR);
-        int M=calendar.get(Calendar.MONTH);
-        int D=calendar.get(Calendar.DAY_OF_MONTH);
-        int hour=calendar.get(calendar.HOUR_OF_DAY);
-        int minute=calendar.get(calendar.MINUTE);
-        etDay.setText("Date : "+D+"/"+(M+1)+"/"+ Y);
-        etTime.setText("Time : "+ hour+" : "+minute);
+        thisyear=calendar.get(Calendar.YEAR);
+         thismonth=calendar.get(Calendar.MONTH);
+         thisday=calendar.get(Calendar.DAY_OF_MONTH);
+        thishour=calendar.get(calendar.HOUR_OF_DAY);
+        thisminute=calendar.get(calendar.MINUTE);
+        etDay.setText("Date : "+thisday+"/"+(thismonth+1)+"/"+ thisyear);
+        etTime.setText("Time : "+ thishour+" : "+thisminute);
+
 
         etTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,13 +116,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         etTime.setText("Time : "+ hourOfDay+" : "+minute);
+                        thishour=hourOfDay;
+                        thisminute=minute;
                     }
                 };
-                Calendar calendar= Calendar.getInstance();
-                int hour=calendar.get(calendar.HOUR_OF_DAY);
-                int minute=calendar.get(calendar.MINUTE);
-                TimePickerDialog myTimeDialog = new TimePickerDialog(MainActivity.this,myTimeListener,hour,minute,true);
-                myTimeDialog.show();
+    TimePickerDialog myTimeDialog = new TimePickerDialog(MainActivity.this, myTimeListener, thishour, thisminute, true);
+    myTimeDialog.show();
+
             }
         });
         etDay.setOnClickListener(new View.OnClickListener() {
@@ -110,16 +132,20 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         etDay.setText("Date : "+dayOfMonth+"/"+(month+1)+"/"+ year);
+                        thisyear = year;
+                        thismonth = month;
+                        thisday = dayOfMonth;
                     }
                 };
-                Calendar calendar= Calendar.getInstance();
-                int Y=calendar.get(Calendar.YEAR);
-                int M=calendar.get(Calendar.MONTH);
-                int D=calendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog myDateDialog = new DatePickerDialog(MainActivity.this,
-                        myDateListener,Y,M,D);
-                myDateDialog.show();
+
+
+    DatePickerDialog myDateDialog = new DatePickerDialog(MainActivity.this,
+            myDateListener, thisyear,thismonth, thisday);
+    myDateDialog.show();
+
+
+
             }
         });
 
